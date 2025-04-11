@@ -23,6 +23,30 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url = 'https://maven.brott.dev/'
+    }
+    maven {
+        url = 'https://jitpack.io'
+    }
+    maven {
+        url= 'https://maven.pedropathing.com/'
+    }
+    maven {
+        url "https://repo.dairy.foundation/releases"
+    }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
+
+    // FTC Dashboard
+    implementation "com.acmerobotics.dashboard:dashboard:0.4.16"
+
+    // SolversLib :core
+
+    implementation('org.ejml:ejml-simple:0.39') {
+        exclude group: 'org.ejml', module: 'ejml-all'
+    }
 }
