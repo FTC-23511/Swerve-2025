@@ -43,8 +43,20 @@ public final class MathUtils {
      * @param number Number to round
      * @param places The number of decimal places to round to
      */
-
     public static double round(double number, int places) {
         return new BigDecimal((String.valueOf(number))).setScale(places, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    /**
+     *
+     * @param angleRadians The angle the be normalized (in radians)
+     * @return Returns the angle passed as the parameter normalized between -pi and pi
+     */
+    public static double normalizeRadians(double angleRadians) {
+        double angle = angleRadians % (2 * Math.PI);
+        if (angle < 0) {
+            return angle + 2 * Math.PI;
+        }
+        return angle;
     }
 }
