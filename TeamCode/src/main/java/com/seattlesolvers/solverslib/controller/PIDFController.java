@@ -1,5 +1,7 @@
 package com.seattlesolvers.solverslib.controller;
 
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
 /**
  * This is a PID controller (https://en.wikipedia.org/wiki/PID_controller)
  * for your robot. Internally, it performs all the calculations for you.
@@ -36,6 +38,13 @@ public class PIDFController {
      */
     public PIDFController(double kp, double ki, double kd, double kf) {
         this(kp, ki, kd, kf, 0, 0);
+    }
+
+    /**
+     * Constructor for the PIDF controller with PIDFCoefficients
+     */
+    public PIDFController(PIDFCoefficients coefficients) {
+        this(coefficients.p, coefficients.i, coefficients.d, coefficients.f);
     }
 
     /**
@@ -232,7 +241,7 @@ public class PIDFController {
     public void setP(double kp) {
         kP = kp;
     }
-    
+
     public void setI(double ki) {
         kI = ki;
     }
