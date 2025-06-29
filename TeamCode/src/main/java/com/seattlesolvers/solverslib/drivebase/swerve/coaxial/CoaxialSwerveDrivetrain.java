@@ -1,5 +1,6 @@
 package com.seattlesolvers.solverslib.drivebase.swerve.coaxial;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.seattlesolvers.solverslib.drivebase.RobotDrive;
 import com.seattlesolvers.solverslib.geometry.Vector2d;
@@ -7,6 +8,8 @@ import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class CoaxialSwerveDrivetrain extends RobotDrive {
     private final CoaxialSwerveModule[] modules = new CoaxialSwerveModule[4];
@@ -43,12 +46,19 @@ public class CoaxialSwerveDrivetrain extends RobotDrive {
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         }
 
-        this.modules[0] = new CoaxialSwerveModule(motors[0], swervos[0], new Vector2d(trackWidth/2, wheelBase/2), maxSpeed, swervoPIDFCoefficients);
-        this.modules[1] = new CoaxialSwerveModule(motors[1], swervos[1], new Vector2d(-trackWidth/2, wheelBase/2), maxSpeed, swervoPIDFCoefficients);
-        this.modules[2] = new CoaxialSwerveModule(motors[2], swervos[2], new Vector2d(-trackWidth/2, -wheelBase/2), maxSpeed, swervoPIDFCoefficients);
-        this.modules[3] = new CoaxialSwerveModule(motors[3], swervos[3], new Vector2d(trackWidth/2, -wheelBase/2), maxSpeed, swervoPIDFCoefficients);
+        this.modules[0] = new CoaxialSwerveModule(motors[0], swervos[0], new Vector2d(trackWidth / 2, wheelBase / 2), maxSpeed, swervoPIDFCoefficients);
+        this.modules[1] = new CoaxialSwerveModule(motors[1], swervos[1], new Vector2d(-trackWidth / 2, wheelBase / 2), maxSpeed, swervoPIDFCoefficients);
+        this.modules[2] = new CoaxialSwerveModule(motors[2], swervos[2], new Vector2d(-trackWidth / 2, -wheelBase / 2), maxSpeed, swervoPIDFCoefficients);
+        this.modules[3] = new CoaxialSwerveModule(motors[3], swervos[3], new Vector2d(trackWidth / 2, -wheelBase / 2), maxSpeed, swervoPIDFCoefficients);
     }
 
+    /**
+     * Sets the hardware minimum caching tolerance/difference between writes
+     * and the requested new power before it is actually written to the hardware
+     * @param motorCachingTolerance the caching tolerance for motors
+     * @param swervoCachingTolerance the caching tolerance for servos
+     * @return this object for chaining purposes
+     */
     public CoaxialSwerveDrivetrain setCachingTolerance(double motorCachingTolerance, double swervoCachingTolerance) {
         for (CoaxialSwerveModule module : modules) {
             module.setCachingTolerance(motorCachingTolerance, swervoCachingTolerance);
@@ -56,11 +66,17 @@ public class CoaxialSwerveDrivetrain extends RobotDrive {
         return this;
     }
 
+    /**
+     * @param targetVelocity the target velocity the drivetrain should move at
+     */
     public void setTargetVelocity(ChassisSpeeds targetVelocity) {
         this.targetVelocity = targetVelocity;
     }
 
-    public void update() {
+    /**
+     * Updates the modules to follow the current target velocity of the drivetrain
+     */
+    public Vector2d[] update() {
         Vector2d[] moduleVelocities = new Vector2d[modules.length];
         // Copy of the module velocities but with just magnitudes, to be normalized with the normalize method
         double[] moduleVelocitiesMagnitude = new double[moduleVelocities.length];
@@ -78,8 +94,14 @@ public class CoaxialSwerveDrivetrain extends RobotDrive {
             // Update the module itself
             modules[i].updateModuleWithVelocity(moduleVelocities[i]);
         }
+
+        return moduleVelocities;
     }
 
+    /**
+     * Updates the modules/drivetrain to follow a target velocity
+     * @param targetVelocity the target velocity for the drivetrain
+     */
     public void updateWithTargetVelocity(ChassisSpeeds targetVelocity) {
         setTargetVelocity(targetVelocity);
         update();
@@ -90,5 +112,13 @@ public class CoaxialSwerveDrivetrain extends RobotDrive {
         for (CoaxialSwerveModule module : modules) {
             module.stop();
         }
+    }
+
+    public CoaxialSwerveModule[] getModules() {
+        return modules;
+    }
+
+    public ChassisSpeeds getTargetVelocity() {
+        return targetVelocity;
     }
 }

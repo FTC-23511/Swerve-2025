@@ -12,7 +12,7 @@ public class CoaxialSwerveModule {
     private final MotorEx motor;
     private final CRServoEx swervo;
     private final double maxSpeed;
-    private final PIDFController swervoPIDF;
+    private PIDFController swervoPIDF;
     // Angle that is tangential to the circle made by the 4 modules relative to the robot
     private final double tangentialAngle;
     private final double circumference;
@@ -68,10 +68,10 @@ public class CoaxialSwerveModule {
         // Wheel flipping optimization (if its quicker to swap motor direction and rotate the pod less, then do that)
         boolean wheelFlipped = false;
         double error = MathUtils.normalizeRadians(targetVelocity.angle() - swervo.getAbsoluteEncoder().getCurrentPosition(), false);
-        if (Math.abs(error) > Math.PI/2) {
-            error += Math.PI * -Math.signum(error);
-            wheelFlipped = true;
-        }
+//        if (Math.abs(error) > Math.PI/2) {
+//            error += Math.PI * -Math.signum(error);
+//            wheelFlipped = true;
+//        }
 
         // Set wheel speed
         if (wheelFlipped) {
@@ -89,7 +89,7 @@ public class CoaxialSwerveModule {
      * @param velocity the velocity the pod/wheel should have, robot centric and in inches/second.
      */
     public void updateModuleWithVelocity(Vector2d velocity) {
-        setTargetVelocity(targetVelocity);
+        setTargetVelocity(velocity);
         updateModule();
     }
 
@@ -98,8 +98,30 @@ public class CoaxialSwerveModule {
         motor.stopMotor();
     }
 
-    public void setCachingTolerance(double motorCachingTolerance, double swervoCachingTolerance) {
+    /**
+     * Sets the hardware minimum caching tolerance/difference between writes
+     * and the requested new power before it is actually written to the hardware
+     * @param motorCachingTolerance the caching tolerance for the motor
+     * @param swervoCachingTolerance the caching tolerance for the servo
+     * @return this object for chaining purposes
+     */
+    public CoaxialSwerveModule setCachingTolerance(double motorCachingTolerance, double swervoCachingTolerance) {
         motor.setCachingTolerance(motorCachingTolerance);
         swervo.setCachingTolerance(swervoCachingTolerance);
+        return this;
+    }
+
+    public String getPowerTelemetry() {
+        return "Motor: " + motor.get() +
+                "; Servo: " + swervo.get() +
+                "; Absolute Encoder: " + swervo.getAbsoluteEncoder().getCurrentPosition();
+    }
+
+    public Vector2d getTargetVelocity() {
+        return targetVelocity;
+    }
+
+    public void setSwervoPIDF(PIDFCoefficients pidfCoefficients) {
+        this.swervoPIDF.setPIDF(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, pidfCoefficients.f);
     }
 }
