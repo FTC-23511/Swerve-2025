@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmode.teleop;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.drivebase.swerve.coaxial.CoaxialSwerveModule;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -18,8 +16,8 @@ import org.firstinspires.ftc.teamcode.globals.Constants;
 import org.firstinspires.ftc.teamcode.globals.Robot;
 
 @Config
-@TeleOp(name = "SwerveTeleOp")
-public class SwerveOpMode extends CommandOpMode {
+@TeleOp(name = "ExampleTeleOp")
+public class ExampleTeleOp extends CommandOpMode {
     public GamepadEx driver;
     public GamepadEx operator;
 
@@ -44,10 +42,10 @@ public class SwerveOpMode extends CommandOpMode {
         operator = new GamepadEx(gamepad2);
 
         // Driver controls
-        // Reset heading
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-                new InstantCommand(() -> robot.drive.setPose(new Pose2d()))
-        );
+        // TODO: add controls here
+
+        // Operator controls
+        // TODO: add controls here
     }
 
     @Override
@@ -59,40 +57,18 @@ public class SwerveOpMode extends CommandOpMode {
             timer = new ElapsedTime();
         }
 
-        // Drive the robot
-        double minSpeed = 0.3; // As a fraction of the max speed of the robot
-        double speedMultiplier = minSpeed + (1 - minSpeed) * driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
-        robot.drive.swerve.updateWithTargetVelocity(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        driver.getLeftY() * Constants.MAX_VELOCITY * speedMultiplier,
-                        -driver.getLeftX() * Constants.MAX_VELOCITY * speedMultiplier,
-                        -driver.getRightX() * Constants.MAX_ANGULAR_VELOCITY * speedMultiplier,
-                        robot.drive.getPose().getRotation()
-                )
-        );
+        // TODO: Add robot drive movement here
 
         telemetryData.addData("Loop Time", timer.milliseconds());
         timer.reset();
 
-        telemetryData.addData("Heading", robot.drive.getPose().getHeading());
-        telemetryData.addData("Robot Pose", robot.drive.getPose());
-
-        telemetryData.addData("Target Chassis Velocity", robot.drive.swerve.getTargetVelocity());
-        telemetryData.addData("FR Module", robot.drive.swerve.getModules()[0].getTargetVelocity() + " | " + robot.drive.swerve.getModules()[0].getPowerTelemetry());
-        telemetryData.addData("FL Module", robot.drive.swerve.getModules()[1].getTargetVelocity() + " | " + robot.drive.swerve.getModules()[1].getPowerTelemetry());
-        telemetryData.addData("BL Module", robot.drive.swerve.getModules()[2].getTargetVelocity() + " | " + robot.drive.swerve.getModules()[2].getPowerTelemetry());
-        telemetryData.addData("BR Module", robot.drive.swerve.getModules()[3].getTargetVelocity() + " | " + robot.drive.swerve.getModules()[3].getPowerTelemetry());
-
         // DO NOT REMOVE ANY LINES BELOW! Runs the command scheduler and updates telemetry
         super.run();
-        robot.pinpoint.update();
         telemetryData.update();
     }
 
     @Override
     public void end() {
-        Constants.END_POSE = robot.drive.getPose();
+//        Constants.END_POSE = robot.drive.getPose();
     }
-
-
 }

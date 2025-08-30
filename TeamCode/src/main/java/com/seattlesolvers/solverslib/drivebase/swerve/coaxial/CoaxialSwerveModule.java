@@ -17,6 +17,8 @@ public class CoaxialSwerveModule {
     private final double tangentialAngle;
     private final double circumference;
     private Vector2d targetVelocity = new Vector2d();
+    private double angleError = 0;
+    public boolean wheelFlipped = false;
 
     /**
      * The constructor that sets up the swerve module object.
@@ -33,7 +35,7 @@ public class CoaxialSwerveModule {
         this.maxSpeed = maxSpeed;
         this.swervoPIDF = new PIDFController(swervoPIDFCoefficients);
 
-        tangentialAngle = offset.angle() + (Math.signum(offset.getX()) * Math.PI/2);
+        tangentialAngle = offset.angle();
         circumference = offset.magnitude() * Math.PI * 2;
     }
 
@@ -49,7 +51,7 @@ public class CoaxialSwerveModule {
         double turningVectorMagnitude = circumference * target.omegaRadiansPerSecond / (Math.PI * 2);
         Vector2d turningVector = new Vector2d(Math.cos(tangentialAngle) * turningVectorMagnitude, Math.sin(tangentialAngle) * turningVectorMagnitude);
 
-        // Final vector - adding turning and translational vectors
+        // Final vector: adding turning and translational vectors
         return turningVector.plus(target.getTranslationalVector());
     }
 
@@ -66,12 +68,12 @@ public class CoaxialSwerveModule {
      */
     public void updateModule() {
         // Wheel flipping optimization (if its quicker to swap motor direction and rotate the pod less, then do that)
-        boolean wheelFlipped = false;
-        double error = MathUtils.normalizeRadians(targetVelocity.angle() - swervo.getAbsoluteEncoder().getCurrentPosition(), false);
-//        if (Math.abs(error) > Math.PI/2) {
-//            error += Math.PI * -Math.signum(error);
-//            wheelFlipped = true;
-//        }
+        wheelFlipped = false;
+        angleError = MathUtils.normalizeRadians(MathUtils.normalizeRadians(targetVelocity.angle(), true) - swervo.getAbsoluteEncoder().getCurrentPosition(), false);
+        if (Math.abs(angleError) > Math.PI/2) {
+            angleError += Math.PI * -Math.signum(angleError);
+            wheelFlipped = true;
+        }
 
         // Set wheel speed
         if (wheelFlipped) {
@@ -81,7 +83,7 @@ public class CoaxialSwerveModule {
         }
 
         // Set swervo speed for pod rotation
-        swervo.set(swervoPIDF.calculate(0, error));
+        swervo.set(swervoPIDF.calculate(0, angleError));
     }
 
     /**
@@ -112,9 +114,9 @@ public class CoaxialSwerveModule {
     }
 
     public String getPowerTelemetry() {
-        return "Motor: " + motor.get() +
-                "; Servo: " + swervo.get() +
-                "; Absolute Encoder: " + swervo.getAbsoluteEncoder().getCurrentPosition();
+        return "Motor: " + MathUtils.round(motor.get(), 3) +
+                "; Servo: " + MathUtils.round(swervo.get(), 3) +
+                "; Absolute Encoder: " + MathUtils.round(swervo.getAbsoluteEncoder().getCurrentPosition(), 3);
     }
 
     public Vector2d getTargetVelocity() {
@@ -123,5 +125,9 @@ public class CoaxialSwerveModule {
 
     public void setSwervoPIDF(PIDFCoefficients pidfCoefficients) {
         this.swervoPIDF.setPIDF(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, pidfCoefficients.f);
+    }
+
+    public double getAngleError() {
+        return angleError;
     }
 }

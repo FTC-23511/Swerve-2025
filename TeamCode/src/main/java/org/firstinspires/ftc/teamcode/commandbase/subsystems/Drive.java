@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.globals.Constants.SWERVO_PIDF_COEFF
 import static org.firstinspires.ftc.teamcode.globals.Constants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.globals.Constants.WHEEL_BASE;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.drivebase.swerve.coaxial.CoaxialSwerveDrivetrain;
@@ -16,7 +15,6 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.globals.Constants;
 import org.firstinspires.ftc.teamcode.globals.Robot;
 
@@ -25,7 +23,7 @@ public class Drive extends SubsystemBase {
     public final AngleUnit ANGLE_UNIT = AngleUnit.RADIANS;
     private final Robot robot = Robot.getInstance();
     public final CoaxialSwerveDrivetrain swerve;
-    private ElapsedTime timer;
+    private final ElapsedTime timer;
     private Pose2d lastPose;
 
     public Drive() {

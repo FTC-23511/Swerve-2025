@@ -21,11 +21,12 @@ public class Constants {
     public static double TRACK_WIDTH = 11.27362; // Inches
     public static double WHEEL_BASE = 11.50976; // Inches
     public static double MAX_VELOCITY = 7.75 * 12; // Inches/second
+    public static double MAX_ANGULAR_VELOCITY = MAX_VELOCITY / Math.hypot(TRACK_WIDTH/2, WHEEL_BASE/2);
     public static double PINPOINT_TELEOP_POLLING_RATE = 20; // Hertz
-    public static PIDFCoefficients SWERVO_PIDF_COEFFICIENTS = new PIDFCoefficients(0, 0, 0, 0);
-    public static double FR_ENCODER_OFFSET = 0.733; // Radians
-    public static double FL_ENCODER_OFFSET = 5.018; // Radians
-    public static double BL_ENCODER_OFFSET = 3.234; // Radians
-    public static double BR_ENCODER_OFFSET = 1.24; // Radians
+    public static PIDFCoefficients SWERVO_PIDF_COEFFICIENTS = new PIDFCoefficients(0.7, 0, 0.2, 0);
+    public static double FR_ENCODER_OFFSET = 3.602; // Radians
+    public static double FL_ENCODER_OFFSET = 3.753; // Radians
+    public static double BL_ENCODER_OFFSET = 0.619; // Radians
+    public static double BR_ENCODER_OFFSET = 2.149; // Radians
 
 }

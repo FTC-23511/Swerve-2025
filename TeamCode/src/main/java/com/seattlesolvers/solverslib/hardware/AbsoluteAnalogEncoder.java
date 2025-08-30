@@ -72,7 +72,7 @@ public class AbsoluteAnalogEncoder implements HardwareDevice {
     }
 
     /**
-     * @return The normalized angular position of the encoder in the units specified by the user from 0 to max
+     * @return The normalized angular position of the encoder in the unit previously specified by the user from 0 to max
      */
     public double getCurrentPosition() {
         return MathUtils.normalizeAngle(
