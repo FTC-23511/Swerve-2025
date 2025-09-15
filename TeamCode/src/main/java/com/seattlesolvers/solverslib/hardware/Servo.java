@@ -1,15 +1,16 @@
 package com.seattlesolvers.solverslib.hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Deprecated
-public class SimpleServo {
+/**
+ * Formerly called SimpleServo in FTCLib. A basic wrapper for Servo objects.
+ */
+public class Servo implements HardwareDevice {
 
-    private Servo servo;
+    private com.qualcomm.robotcore.hardware.Servo servo;
 
     //always stored internally as radians
     private double maxAngle, minAngle;
@@ -17,14 +18,14 @@ public class SimpleServo {
     private final double maxPosition = 1;
     private final double minPosition = 0;
 
-    public SimpleServo(HardwareMap hw, String servoName, double minAngle, double maxAngle, AngleUnit angleUnit) {
-        servo = hw.get(Servo.class, servoName);
+    public Servo(HardwareMap hw, String servoName, double minAngle, double maxAngle, AngleUnit angleUnit) {
+        servo = hw.get(com.qualcomm.robotcore.hardware.Servo.class, servoName);
 
         this.minAngle = toRadians(minAngle, angleUnit);
         this.maxAngle = toRadians(maxAngle, angleUnit);
     }
 
-    public SimpleServo(HardwareMap hw, String servoName, double minDegree, double maxDegree) {
+    public Servo(HardwareMap hw, String servoName, double minDegree, double maxDegree) {
         this(hw, servoName, minDegree, maxDegree, AngleUnit.DEGREES);
     }
 
@@ -65,11 +66,11 @@ public class SimpleServo {
     }
 
     public void setInverted(boolean isInverted) {
-        servo.setDirection(isInverted ? Servo.Direction.REVERSE : Servo.Direction.FORWARD);
+        servo.setDirection(isInverted ? com.qualcomm.robotcore.hardware.Servo.Direction.REVERSE : com.qualcomm.robotcore.hardware.Servo.Direction.FORWARD);
     }
 
     public boolean getInverted() {
-        return Servo.Direction.REVERSE == servo.getDirection();
+        return com.qualcomm.robotcore.hardware.Servo.Direction.REVERSE == servo.getDirection();
     }
 
     public double getPosition() {
@@ -99,7 +100,7 @@ public class SimpleServo {
     public String getDeviceType() {
         String port = Integer.toString(servo.getPortNumber());
         String controller = servo.getController().toString();
-        return "SimpleServo: " + port + "; " + controller;
+        return "Servo: " + port + "; " + controller;
     }
 
     private double toRadians(double angle, AngleUnit angleUnit) {

@@ -24,8 +24,8 @@ public class ServoEx implements HardwareDevice {
      * The main constructor for the ServoEx object.
      * @param hwMap hardwareMap
      * @param id the ID of the servo as configured
-     * @param min the minimum angle of the servo in the specified angle unit (when the servo is set to 0)
-     * @param max the maximum angle of the servo in the specified angle unit (when the servo is set to 1)
+     * @param min the minimum angle of the servo in an angle unit (when the servo is set to 0)
+     * @param max the maximum angle of the servo in an angle unit (when the servo is set to 1)
      */
     public ServoEx(HardwareMap hwMap, String id, double min, double max) {
         if (max < min) {
@@ -44,10 +44,9 @@ public class ServoEx implements HardwareDevice {
      *
      * @param hwMap hardwareMap
      * @param id the ID of the servo as configured
-     * @param range the angular range of the servo in the specified angle unit (from when the servo is set to 0 to 1)
-     * @param angleUnit the angle unit to be associated with the servo
+     * @param range the angular range of the servo in an angle unit (from when the servo is set to 0 to 1)
      */
-    public ServoEx(HardwareMap hwMap, String id, double range, AngleUnit angleUnit) {
+    public ServoEx(HardwareMap hwMap, String id, double range) {
         this(hwMap, id, 0.0, range);
     }
 
@@ -58,11 +57,6 @@ public class ServoEx implements HardwareDevice {
     public ServoEx(HardwareMap hwMap, String id) {
         this(hwMap, id, 0.0, 1.0);
     }
-
-    // TODO: Actually implement this (needs more research on how it behaves with get and set positions)
-//    public void scaleRange(double min, double max) {
-//        servo.scaleRange(min, max);
-//    }
 
     /**
      * @param output the raw position (or angle if range or max + min were defined in constructor) the servo should be set to
@@ -159,6 +153,6 @@ public class ServoEx implements HardwareDevice {
 
     @Override
     public String getDeviceType() {
-        return "Extended Servo; " + id + " from " + servo.getPortNumber();
+        return "Extended Servo: " + id + " from " + servo.getPortNumber();
     }
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode.tuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
@@ -13,6 +14,7 @@ import com.seattlesolvers.solverslib.geometry.Vector2d;
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.seattlesolvers.solverslib.util.TelemetryData;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.globals.Constants;
 import org.firstinspires.ftc.teamcode.globals.Robot;
 
@@ -52,7 +54,12 @@ public class RandomPowerTestingOpMode extends CommandOpMode {
             timer = new ElapsedTime();
         }
 
-        robot.FRswervo.set(1);
+        robot.BLswervo.set(1);
+        robot.BLmotor.set(1);
+
+        DcMotorEx BL = (DcMotorEx) robot.BLmotor.motor;
+        telemetryData.addData("BL motor", BL.getCurrent(CurrentUnit.MILLIAMPS));
+
 
         telemetryData.addData("Target Chassis Velocity", robot.drive.swerve.getTargetVelocity());
         telemetryData.addData("FR Module", robot.drive.swerve.getModules()[0].getTargetVelocity() + " | " + robot.drive.swerve.getModules()[0].getPowerTelemetry());
